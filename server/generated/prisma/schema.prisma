@@ -1,0 +1,187 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum EnumRole {
+  ADMIN
+  USER
+}
+
+model User {
+  id         String   @id @default(uuid())
+  name       String?
+  email      String?  @unique
+  avatar     String?
+  provider   String?
+  providerId String?
+  role       EnumRole @default(USER)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  Artist       Artist[]
+  Playlist     Playlist[]
+  Like         Like[]
+  History      History[]
+  Feedback     Feedback[]
+  Notification Notification[]
+  Subscription Subscription[]
+  Report       Report[]
+}
+
+model Artist {
+  id         String   @id @default(uuid())
+  name       String
+  user_id    String?
+  created_at DateTime
+
+  user          User?          @relation(fields: [user_id], references: [id])
+  songs         Song[]
+  albums        Album[]
+  subscriptions Subscription[]
+}
+
+model Song {
+  id         String   @id @default(uuid())
+  title      String
+  url        String
+  cover      String
+  duration   Int
+  artist_id  String
+  created_at DateTime
+
+  artist        Artist         @relation(fields: [artist_id], references: [id])
+  songGenres    SongGenre[]
+  albumSongs    AlbumSong[]
+  playlistSongs PlaylistSong[]
+  likes         Like[]
+  histories     History[]
+  reports       Report[]
+}
+
+model SongGenre {
+  id       String @id @default(uuid())
+  song_id  String
+  genre_id String
+
+  song  Song  @relation(fields: [song_id], references: [id])
+  genre Genre @relation(fields: [genre_id], references: [id])
+}
+
+model Album {
+  id           String   @id @default(uuid())
+  title        String
+  release_date DateTime
+  cover        String
+  artist_id    String
+  created_at   DateTime
+
+  artist     Artist      @relation(fields: [artist_id], references: [id])
+  albumSongs AlbumSong[]
+}
+
+model AlbumSong {
+  id       String @id @default(uuid())
+  album_id String
+  song_id  String
+
+  album Album @relation(fields: [album_id], references: [id])
+  song  Song  @relation(fields: [song_id], references: [id])
+}
+
+model Playlist {
+  id         String   @id @default(uuid())
+  user_id    String?
+  created_at DateTime
+
+  playlistSongs PlaylistSong[]
+  user          User?          @relation(fields: [user_id], references: [id])
+}
+
+model PlaylistSong {
+  id          String @id @default(uuid())
+  playlist_id String
+  song_id     String
+
+  playlist Playlist @relation(fields: [playlist_id], references: [id])
+  song     Song     @relation(fields: [song_id], references: [id])
+}
+
+model Genre {
+  id   String @id @default(uuid())
+  name String
+
+  songGenres SongGenre[]
+}
+
+model Like {
+  id         String   @id @default(uuid())
+  user_id    String
+  song_id    String?
+  created_at DateTime
+
+  user User  @relation(fields: [user_id], references: [id])
+  song Song? @relation(fields: [song_id], references: [id])
+}
+
+model History {
+  id          String   @id @default(uuid())
+  user_id     String
+  song_id     String
+  listened_at DateTime
+
+  user User @relation(fields: [user_id], references: [id])
+  song Song @relation(fields: [song_id], references: [id])
+}
+
+model Feedback {
+  id         String   @id @default(uuid())
+  user_id    String
+  content    String
+  created_at DateTime
+
+  user User @relation(fields: [user_id], references: [id])
+}
+
+model Notification {
+  id         String   @id @default(uuid())
+  user_id    String
+  title      String
+  message    String
+  read       Boolean
+  created_at DateTime
+
+  user User @relation(fields: [user_id], references: [id])
+}
+
+model Subscription {
+  id            String   @id @default(uuid())
+  user_id       String
+  artist_id     String
+  subscribed_at DateTime
+
+  user   User   @relation(fields: [user_id], references: [id])
+  artist Artist @relation(fields: [artist_id], references: [id])
+}
+
+model Report {
+  id         String   @id @default(uuid())
+  user_id    String
+  song_id    String?
+  reason     String
+  created_at DateTime
+
+  user User  @relation(fields: [user_id], references: [id])
+  song Song? @relation(fields: [song_id], references: [id])
+}
