@@ -1,5 +1,9 @@
 <script lang="ts">
-	const genres = ['Blues', 'Jazz', 'Rock', 'Pop', 'Hip-Hop'];
+	import type { Genre } from '$lib/types';
+	import type { PageProps } from '../$types';
+
+	let { data }: PageProps = $props();
+	console.log(data);
 
 	const borderColors = [
 		'border-red-300',
@@ -44,7 +48,6 @@
 		'border-cyan-500'
 	];
 
-	// Shuffle function (Fisher-Yates)
 	function shuffleArray(array: string[]) {
 		for (let i = array.length - 1; i > 0; i--) {
 			const j = Math.floor(Math.random() * (i + 1));
@@ -53,12 +56,11 @@
 		return array;
 	}
 
-	// Shuffle màu rồi gán lần lượt cho genres (đảm bảo không trùng màu)
 	const shuffledColors = shuffleArray([...borderColors]);
 
-	const genreButtons = genres.map((genre, index) => {
+	const genreButtons = (data.genres as Genre[]).map((genre, index) => {
 		return {
-			name: genre,
+			name: genre.name,
 			borderClass: shuffledColors[index % shuffledColors.length]
 		};
 	});
