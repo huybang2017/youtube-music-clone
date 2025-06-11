@@ -30,3 +30,8 @@ export interface AxiosResponse<T = unknown> {
 	config: AxiosRequestConfig;
 	request?: unknown;
 }
+
+export interface Genre {
+	id: string;
+	name: string;
+}
