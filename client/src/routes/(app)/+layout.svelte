@@ -58,7 +58,7 @@
 
 <div class="flex h-screen flex-col">
 	<header
-		class="flex items-center justify-between bg-gray-50 px-4 py-3 shadow-md dark:border-b dark:border-zinc-800 dark:bg-black"
+		class="fixed left-0 right-0 top-0 z-50 flex items-center justify-between bg-gray-50 px-4 py-3 shadow-md dark:border-b dark:border-zinc-800 dark:bg-black"
 	>
 		<div class="flex items-center justify-center gap-4">
 			<button
@@ -247,7 +247,7 @@
 	<div class="flex flex-1 bg-gray-100 dark:bg-black">
 		{#if state.isSidebarOpen}
 			<aside
-				class="w-64 bg-white text-gray-800 shadow-lg dark:border-r dark:border-zinc-800 dark:bg-black dark:text-white"
+				class="fixed left-0 top-[64px] z-40 h-[calc(100vh-64px)] w-64 bg-white text-gray-800 shadow-lg dark:border-r dark:border-zinc-800 dark:bg-black dark:text-white"
 			>
 				<nav class="space-y-2 p-4">
 					<a
@@ -332,7 +332,11 @@
 			</aside>
 		{/if}
 
-		<main class="flex-1 p-6 text-gray-900 dark:text-white">
+		<main
+			class="flex-1 p-20 pt-[130px] text-gray-900 dark:text-white"
+			class:ml-64={state.isSidebarOpen}
+			class:pb-[85px]={state.isSidebarOpen}
+		>
 			{@render children()}
 		</main>
 	</div>
