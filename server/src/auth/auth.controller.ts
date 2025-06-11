@@ -32,9 +32,7 @@ export class AuthController {
       path: '/',
       maxAge: 100 * 24 * 60 * 60 * 1000,
     });
-    const redirectUrl = new URL('http://localhost:5173/google-callback');
-
-    redirectUrl.searchParams.set('accessToken', result.accessToken ?? '');
+    const redirectUrl = new URL('http://localhost:5173');
 
     return res.redirect(redirectUrl.toString());
   }
