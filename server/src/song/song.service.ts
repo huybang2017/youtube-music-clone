@@ -9,6 +9,7 @@ import { ArtistService } from 'src/artist/artist.service';
 import { CreateGenresDto } from 'src/genre/dto/create-genres.dto';
 import { AlbumService } from 'src/album/album.service';
 import { CreateAlbumDto } from 'src/album/dto/create-album.dto';
+import { PlaylistService } from 'src/playlist/playlist.service';
 
 @Injectable()
 export class SongService {
@@ -18,6 +19,7 @@ export class SongService {
     private genreService: GenreService,
     private artistService: ArtistService,
     private albumService: AlbumService,
+    private playlistService: PlaylistService,
   ) {}
 
   async create(createSongDto: CreateSongDto): Promise<Song> {
@@ -98,7 +100,7 @@ export class SongService {
   }
 
   findAll() {
-    return this.prisma.song.findMany({
+    const songs = this.prisma.song.findMany({
       include: {
         artist: true,
         songGenres: {
@@ -117,6 +119,8 @@ export class SongService {
         reports: true,
       },
     });
+
+    return songs;
   }
 
   findOne(id: string) {

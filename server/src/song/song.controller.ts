@@ -7,6 +7,7 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
 } from '@nestjs/common';
 import { SongService } from './song.service';
 import {
@@ -17,8 +18,10 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Song')
+@UseGuards(AuthGuard('jwt'))
 @ApiBearerAuth('access-token')
 @Controller('song')
 export class SongController {
